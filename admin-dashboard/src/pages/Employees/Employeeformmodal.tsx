@@ -33,7 +33,7 @@ export const EmployeeFormModal = ({
     setSaving(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/employees", {
+      const response = await fetch("https://biometric-attendence-p6nc.onrender.com/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
