@@ -132,12 +132,19 @@ interface AppContextType {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
-
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [employees, setEmployees] = useState<Employee[]>(() => {
+    if (typeof window === 'undefined') return initialEmployees;
+
     const saved = localStorage.getItem('biosync_employees');
-    return saved ? JSON.parse(saved) : initialEmployees;
-useEffect(() => {
+    try {
+      return saved ? JSON.parse(saved) : initialEmployees;
+    } catch {
+      return initialEmployees;
+    }
+  });
+
+  useEffect(() => {
     const fetchEmployees = async () => {
       try {
         const res = await fetch('https://biometric-attendence-p6nc.onrender.com/api/employees');
@@ -169,34 +176,66 @@ useEffect(() => {
     };
 
     fetchEmployees();
-   }, []);
+  }, []);
 
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => {
+    if (typeof window === 'undefined') return initialAttendanceRecords;
+
     const saved = localStorage.getItem('biosync_attendance');
-    return saved ? JSON.parse(saved) : initialAttendanceRecords;
+    try {
+      return saved ? JSON.parse(saved) : initialAttendanceRecords;
+    } catch {
+      return initialAttendanceRecords;
+    }
   });
 
   const [breaks, setBreaks] = useState<BreakRecord[]>(() => {
+    if (typeof window === 'undefined') return initialBreakRecords;
+
     const saved = localStorage.getItem('biosync_breaks');
-    return saved ? JSON.parse(saved) : initialBreakRecords;
+    try {
+      return saved ? JSON.parse(saved) : initialBreakRecords;
+    } catch {
+      return initialBreakRecords;
+    }
   });
 
   const [departments, setDepartments] = useState<Department[]>(() => {
+    if (typeof window === 'undefined') return initialDepartments;
+
     const saved = localStorage.getItem('biosync_departments');
-    return saved ? JSON.parse(saved) : initialDepartments;
+    try {
+      return saved ? JSON.parse(saved) : initialDepartments;
+    } catch {
+      return initialDepartments;
+    }
   });
 
   const [devices, setDevices] = useState<BiometricDevice[]>(() => {
+    if (typeof window === 'undefined') return initialBiometricDevices;
+
     const saved = localStorage.getItem('biosync_devices');
-    return saved ? JSON.parse(saved) : initialBiometricDevices;
+    try {
+      return saved ? JSON.parse(saved) : initialBiometricDevices;
+    } catch {
+      return initialBiometricDevices;
+    }
   });
 
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>(() => {
+    if (typeof window === 'undefined') return initialAdminUsers;
+
     const saved = localStorage.getItem('biosync_admin_users');
-    return saved ? JSON.parse(saved) : initialAdminUsers;
+    try {
+      return saved ? JSON.parse(saved) : initialAdminUsers;
+    } catch {
+      return initialAdminUsers;
+    }
   });
 
   const [settings, setSettings] = useState<SystemSettings>(() => {
+    if (typeof window === 'undefined') return initialSettings;
+
     const saved = localStorage.getItem('biosync_settings');
     if (saved) {
       try {
@@ -410,7 +449,7 @@ useEffect(() => {
 
   const totalWorkMinutes = todayAttendance.reduce((acc, curr) => acc + (curr.workDurationMinutes || 0), 0);
   const totalHrs = Math.floor(totalWorkMinutes / 60);
-  const remMins = totalWorkMinutes % 60;
+  const remMins = totalWorkMinutes % 66;
   const totalWorkHoursFormatted = `${totalHrs}h ${remMins}m`;
 
   const attendanceRate = activeEmployees.length > 0
