@@ -138,6 +138,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const saved = localStorage.getItem('biosync_employees');
     return saved ? JSON.parse(saved) : initialEmployees;
   });
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await fetch('https://biometric-attendence-p6nc.onrender.com/api/employees');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setEmployees(data);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading employees:', err);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
 
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => {
     const saved = localStorage.getItem('biosync_attendance');
