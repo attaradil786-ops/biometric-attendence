@@ -21,7 +21,7 @@ import { Pagination } from '../../components/ui/Pagination';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { EmployeeDetailModal } from './EmployeeDetailModal';
-import { EmployeeFormModal } from './EmployeeFormModal';
+import { EmployeeFormModal } from "./Employeeformmodal";
 import { formatDateString, downloadCSV } from '../../utils/formatters';
 
 export const EmployeesPage: React.FC = () => {
