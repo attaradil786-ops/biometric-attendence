@@ -137,15 +137,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [employees, setEmployees] = useState<Employee[]>(() => {
     const saved = localStorage.getItem('biosync_employees');
     return saved ? JSON.parse(saved) : initialEmployees;
-  });
-  useEffect(() => {
+useEffect(() => {
     const fetchEmployees = async () => {
       try {
         const res = await fetch('https://biometric-attendence-p6nc.onrender.com/api/employees');
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            setEmployees(data);
+            const formatted = data.map((emp: any) => ({
+              ...emp,
+              id: emp.id?.toString() || emp.employee_id || String(Math.random()),
+              employeeId: emp.employee_id || emp.employeeId || `EMP-${emp.id || '0000'}`,
+              name: emp.full_name || emp.name || 'Unnamed Employee',
+              email: emp.email || '',
+              department: emp.department || 'General',
+              role: emp.role || emp.designation || 'Staff',
+              status: emp.status || 'Active',
+              joiningDate: emp.created_at ? new Date(emp.created_at).toLocaleDateString() : 'Jan 1, 2026',
+              biometrics: emp.biometrics || {
+                fingerprint: false,
+                face: false,
+                rfid: false,
+              },
+            }));
+            setEmployees(formatted);
           }
         }
       } catch (err) {
@@ -154,7 +169,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     fetchEmployees();
-  }, []);
+   }, []);
 
   const [attendance, setAttendance] = useState<AttendanceRecord[]>(() => {
     const saved = localStorage.getItem('biosync_attendance');
