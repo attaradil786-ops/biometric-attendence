@@ -148,27 +148,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const fetchEmployees = async () => {
       try {
         const res = await fetch('https://biometric-attendence-p6nc.onrender.com/api/employees');
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            const formatted = data.map((emp: any) => ({
-              ...emp,
-              id: emp.id?.toString() || emp.employee_id || String(Math.random()),
-              employeeId: emp.employee_id || emp.employeeId || `EMP-${emp.id || '0000'}`,
-              name: emp.full_name || emp.name || 'Unnamed Employee',
-              email: emp.email || '',
-              department: emp.department || 'General',
-              role: emp.role || emp.designation || 'Staff',
-              status: emp.status || 'Active',
-              joiningDate: emp.created_at ? new Date(emp.created_at).toLocaleDateString() : 'Jan 1, 2026',
-              biometrics: emp.biometrics || {
-                fingerprint: false,
-                face: false,
-                rfid: false,
-              },
-            }));
-            setEmployees(formatted);
-          }
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          const formatted = data.map((emp: any) => ({
+            ...emp,
+            id: emp.id?.toString() || emp.employee_id || String(Math.random()),
+            employeeId: emp.employee_id || emp.employeeId || `EMP-${emp.id || '0000'}`,
+            name: emp.full_name || emp.name || 'Unnamed Employee',
+            email: emp.email || '',
+            department: emp.department || 'General',
+            role: emp.role || emp.designation || 'Staff',
+            status: emp.status || 'Active',
+            joiningDate: emp.created_at ? new Date(emp.created_at).toLocaleDateString() : 'Jan 1, 2026',
+            biometrics: emp.biometrics || {
+              fingerprint: false,
+              face: false,
+              rfid: false,
+            },
+          }));
+
+          setEmployees(formatted);
         }
       } catch (err) {
         console.error('Error loading employees:', err);
