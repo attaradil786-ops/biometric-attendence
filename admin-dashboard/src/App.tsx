@@ -28,6 +28,37 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 export default function App() {
-  const app = useApp();
-  return <div>{/* app UI */}</div>;
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<DashboardPage />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="employees" element={<EmployeesPage />} />
+              <Route path="attendance" element={<AttendancePage />} />
+              <Route path="breaks" element={<BreaksPage />} />
+              <Route path="reports" element={<ReportsPage />} />
+              <Route path="departments" element={<DepartmentsPage />} />
+              <Route path="devices" element={<DevicesPage />} />
+              <Route path="users" element={<UsersPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="teachers" element={<TeachersListPage />} />
+              <Route path="teachers/:id" element={<TeacherProfilePage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AppProvider>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
