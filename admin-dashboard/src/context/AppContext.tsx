@@ -325,24 +325,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const hash = data.templateHash || `SHA256_${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
     setEmployees((prev) =>
-      prev.map((e) => {
+prev.map((e) => {
         if (e.id === data.employeeId) {
-          const currentEnrolled = { ...(e.enrolledBiometrics || e.biometrics) };
+          const currentEnrolled = {
+            fingerprint: Boolean(e.enrolledBiometrics?.fingerprint),
+            face: Boolean(e.enrolledBiometrics?.face),
+            rfidCard: Boolean(e.enrolledBiometrics?.rfidCard),
+          };
+
           if (data.method === 'fingerprint' || data.method === 'all') currentEnrolled.fingerprint = true;
           if (data.method === 'face' || data.method === 'all') currentEnrolled.face = true;
-          if (data.method === 'rfidCard' || data.method === 'all') {
-            currentEnrolled.rfidCard = true;
-            currentEnrolled.rfid = true;
-          }
+          if (data.method === 'rfidCard' || data.method === 'all') currentEnrolled.rfidCard = true;
 
           return {
             ...e,
-            biometrics: currentEnrolled,
             enrolledBiometrics: currentEnrolled,
           };
         }
-        return e;
-      })
+        return e;      })
     );
 
     setDevices((prev) =>
